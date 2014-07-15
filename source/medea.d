@@ -1,3 +1,6 @@
+/*
+ * Medea: Modern JSON for D
+ */
 module medea;
 
 import std.json;
