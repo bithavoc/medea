@@ -25,6 +25,12 @@ unittest {
                 34.5
         });
         assert(typeid(value) is typeid(FloatValue), "value should be FloatValue");
+
+        value = parse(q{
+                true
+        });
+        assert(typeid(value) is typeid(BoolValue), "value should be BoolValue");
+
         value = parse(q{
                 {
                     "i": 23,
@@ -91,5 +97,18 @@ unittest {
         JSONValue val = value.toJSONValue();
         assert(val.type == JSON_TYPE.OBJECT, ".value type should be OBJECT");
         assert(val.object.length == 5, ".object should contain 5 properties");
+    }
+    {
+        void assertType(T, V)(V val) {
+            T v = cast(T)val;
+            assert(v, std.conv.text(T.stringof, " expected but ", typeid(val), " was found instead"));
+        }
+        assertType!IntegerValue(20.toValue());
+        assertType!FloatValue(20.3.toValue());
+        assertType!StringValue("hello world".toValue());
+        assertType!ArrayValue([cast(Value)new IntegerValue(20)].toValue());
+        assertType!ObjectValue(["fav_number": cast(Value)new IntegerValue(20)].toValue());
+        assertType!BoolValue(true.toValue());
+        assertType!BoolValue(false.toValue());
     }
 }

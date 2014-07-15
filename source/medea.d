@@ -4,6 +4,8 @@
 module medea;
 
 import std.json;
+import std.traits;
+import std.conv : text;
 
 abstract class Value {
     public: 
@@ -77,6 +79,28 @@ final class FloatValue : NumberValue {
         }
         @property real number() {
             return _n;
+        }
+}
+
+final class BoolValue : Value {
+    private:
+        bool _b;
+    public:
+        this(in bool b) {
+            _b = b;
+        }
+
+        this() {
+            this(false);
+        }
+
+        override JSONValue toJSONValue() {
+            JSONValue v;
+            v = _b;
+            return v;
+        }
+        @property bool boolean() {
+            return _b;
         }
 }
 
@@ -206,6 +230,12 @@ Value wrap(JSONValue value) {
         case JSON_TYPE.NULL: {
             return new NullValue();
         }
+        case JSON_TYPE.TRUE: {
+            return new BoolValue(true);
+        }
+        case JSON_TYPE.FALSE: {
+            return new BoolValue(false);
+        }
         default:
             throw new Exception("Unknown JSON_TYPE");
     }
@@ -214,5 +244,25 @@ Value wrap(JSONValue value) {
 Value parse(string doc) {
     auto document = parseJSON(doc);  
     return document.wrap();
+}
+
+Value toValue(T)(T val) {
+    static if(is(T: bool)) {
+        return new BoolValue(val);
+    }
+    else static if(is(T : long)) {
+        return new IntegerValue(val);
+    } else static if(is(T: string)) {
+        return new StringValue(val);
+    } else static if(isFloatingPoint!(T)) {
+        return new FloatValue(val);
+    } else static if(isArray!(T)) {
+        return new ArrayValue(val);
+    } else static if(is(T : Value[Key], Key)) {
+        static assert(is(Key : string), text("Key must be string but ", Key.stringof, " was given instead"));
+        return new ObjectValue(val);
+    } else {
+        static assert(false, text(`unable to convert type "`, T.stringof, `" to json Value`));
+    }
 }
 
