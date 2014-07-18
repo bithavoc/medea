@@ -3,6 +3,7 @@
 	"description": "Modern JSON",
 	"copyright": "Copyright © 2014, bithavoc.io",
 	"targetType": "library",
+    "license": "MIT",
 	"authors": ["bithavoc"],
 	"dependencies": {
 	},
