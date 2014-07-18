@@ -30,6 +30,15 @@ unittest {
                 true
         });
         assert(typeid(value) is typeid(BoolValue), "value should be BoolValue");
+        BoolValue bv = cast(BoolValue)value;
+        assert(bv.boolean, "Value should be true");
+
+        value = parse(q{
+                false
+        });
+        assert(typeid(value) is typeid(BoolValue), "value should be BoolValue");
+        bv = cast(BoolValue)value;
+        assert(!bv.boolean, "Value should be false");
 
         value = parse(q{
                 {
@@ -110,5 +119,39 @@ unittest {
         assertType!ObjectValue(["fav_number": cast(Value)new IntegerValue(20)].toValue());
         assertType!BoolValue(true.toValue());
         assertType!BoolValue(false.toValue());
+    }
+    {
+        Value val = parse(q{
+                {
+                    "firstName": "Bit",
+                    "lastName": "Havoc"
+                } 
+                });
+        ObjectValue obj = cast(ObjectValue)val;
+
+        assert("firstName" in obj, "ObjectValue should report the property as existent");
+        assert("unknownStuff" !in obj, "ObjectValue should NOT report the property as existent");
+
+        StringValue firstName = cast(StringValue)obj.properties["firstName"];
+        assert(firstName, "property should not be returned as null");
+
+        Value stuff = obj["stuff"];
+        assert(!stuff, "property should be returned as null");
+
+    }
+    {
+        Value val = parse(q{
+                [50, "hello"]
+                });
+        ArrayValue obj = cast(ArrayValue)val;
+        assert(obj.items.length == 2, "array should contain 2 items");
+        IntegerValue fifty = cast(IntegerValue)obj[0];
+        assert(fifty.number == 50, "number should be 50");
+
+        StringValue hello = cast(StringValue)obj[1];
+        assert(hello.text == "hello", "text should be 'hello'");
+
+        Value outOfRangeItem = obj[10];
+        assert(!outOfRangeItem, "not in range items should be null");
     }
 }

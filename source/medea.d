@@ -160,6 +160,19 @@ final class ObjectValue : Value {
         @property Value[string] properties() {
             return _values;
         }
+
+        auto opBinaryRight(string op : "in")(string k) const
+        {
+            return k in _values;
+        }
+
+        Value opIndex(string k)
+        {
+            if(k !in this) {
+                return null;
+            }
+            return _values[k];
+        }
 }
 
 final class ArrayValue : Value {
@@ -191,8 +204,16 @@ final class ArrayValue : Value {
             return v;
         }
 
-        @property Value[] properties() {
+        @property Value[] items() {
             return _values;
+        }
+
+        Value opIndex(size_t i)
+        {
+            if(i > _values.length -1) {
+                return null;
+            }
+            return _values[i];
         }
 }
 
