@@ -159,7 +159,18 @@ unittest {
                 [50, "hello"]
                 });
         string valStr = val.toJSONString();
-        std.stdio.writeln("Text: ", valStr);
         assert(valStr == `[50,"hello"]`, "formatted json doesnt match");
+    }
+    {
+        ObjectValue obj = new ObjectValue();
+        obj["hello"] = new StringValue("world");
+        string valStr = obj.toJSONString();
+        assert(valStr == `{"hello":"world"}`, "property was not set in object");
+    }
+    {
+        ArrayValue obj = new ArrayValue([cast(Value)new IntegerValue(20)]);
+        obj[0] = new StringValue("world");
+        string valStr = obj.toJSONString();
+        assert(valStr == `["world"]`, "index was not set in array");
     }
 }

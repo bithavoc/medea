@@ -178,6 +178,11 @@ final class ObjectValue : Value {
             }
             return _values[k];
         }
+
+        Value opIndexAssign(Value v, string k) {
+            _values[k] = v;
+            return v;
+        }
 }
 
 final class ArrayValue : Value {
@@ -219,6 +224,10 @@ final class ArrayValue : Value {
                 return null;
             }
             return _values[i];
+        }
+        Value opIndexAssign(Value v, size_t i) {
+            _values[i] = v;
+            return v;
         }
 }
 
