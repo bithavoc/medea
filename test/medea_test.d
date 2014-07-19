@@ -154,4 +154,12 @@ unittest {
         Value outOfRangeItem = obj[10];
         assert(!outOfRangeItem, "not in range items should be null");
     }
+    {
+        Value val = parse(q{
+                [50, "hello"]
+                });
+        string valStr = val.toJSONString();
+        std.stdio.writeln("Text: ", valStr);
+        assert(valStr == `[50,"hello"]`, "formatted json doesnt match");
+    }
 }

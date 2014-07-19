@@ -12,6 +12,11 @@ abstract class Value {
         JSONValue toJSONValue();
 }
 
+string toJSONString(Value value, bool pretty = false) {
+    JSONValue jval = value.toJSONValue();
+    return (&jval).toJSON(pretty);
+}
+
 abstract class NumberValue : Value {
     
 }
